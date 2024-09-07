@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   db: {
     uri: process.env.DB_URI,
     poolSize: process.env.DB_POOL_SIZE,
