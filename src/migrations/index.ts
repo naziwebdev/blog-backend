@@ -6,22 +6,22 @@ const migration = async () => {
   const connection = await db.getConnection();
 
   const createUsersTableSql = fs.readFileSync(
-    path.resolve(__dirname, "./users-ddl.sql"),
+    path.resolve(__dirname,"..","..","src/migrations", "./users-ddl.sql"),
     "utf-8"
   );
 
   const createTagsTableSql = fs.readFileSync(
-    path.resolve(__dirname, "./tags-ddl.sql"),
+    path.resolve(__dirname, "..","..","src/migrations","./tags-ddl.sql"),
     "utf-8"
   );
 
   const createArticlesTableSql = fs.readFileSync(
-    path.resolve(__dirname, "./articles-ddl.sql"),
+    path.resolve(__dirname,"..","..","src/migrations", "./articles-ddl.sql"),
     "utf-8"
   );
 
   const createArticlesTagsTableSql = fs.readFileSync(
-    path.resolve(__dirname, "./articles-tags-ddl.sql"),
+    path.resolve(__dirname, "..","..","src/migrations","./articles-tags-ddl.sql"),
     "utf-8"
   );
 
@@ -35,6 +35,7 @@ const migration = async () => {
 
     await connection.commit();
   } catch (error) {
+    console.log(error)
     await connection.rollback();
   }
 };
@@ -42,5 +43,6 @@ const migration = async () => {
 migration()
   .then(() => console.log("Migrations ran successfully"))
   .catch(async (err) => {
+    console.log(err)
     await db.end();
   });

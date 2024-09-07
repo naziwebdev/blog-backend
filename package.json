@@ -2,13 +2,14 @@
   "name": "blog",
   "version": "1.0.0",
   "description": "",
+  "type": "commonjs",
   "main": "./dist/server.js",
   "scripts": {
     "ts:node": "ts-node src/index.ts",
     "build": "tsc",
     "start": "node build/src",
-    "dev": "dotenv -e .env nodemon src/server.ts",
-    "migrate": "dotenv -e .env node src/migrations/index.ts"
+    "dev": "dotenv -e .env nodemon ./dist/server.js",
+    "migrate": "dotenv -e .env node ./dist/migrations/index.js"
   },
   "keywords": [],
   "author": "",
