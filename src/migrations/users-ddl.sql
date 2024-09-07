@@ -10,4 +10,4 @@ CREATE TABLE users (
     PRIMARY KEY (id),
     UNIQUE KEY users_unique_username (username),
     UNIQUE KEY users_unique_email (email)
-) ENGINE = INNODB DEFAULT CHARSET = utf8mb4 COLLATE utf8mb4_general_ci
+) ENGINE = INNODB DEFAULT CHARSET = utf8mb4 COLLATE utf8mb4_general_ci;

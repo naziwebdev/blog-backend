@@ -11,4 +11,4 @@ CREATE TABLE articles (
     UNIQUE KEY articles_unique_slug (slug),
     KEY articles_author_fk (author_id),
     CONSTRAINT articles_author_fk FOREIGN KEY (author_id) REFERENCES users (id) ON DELETE CASCADE
-) ENGINE = INNODB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
+) ENGINE = INNODB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
