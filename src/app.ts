@@ -2,7 +2,7 @@ import express, { Request, Response } from "express";
 import path from "path";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import {findById} from "./repositories/users";
+// import {findById} from "./repositories/users";
 
 
 const app = express();
@@ -31,11 +31,11 @@ app.use(express.static(path.resolve(__dirname, "..", "public")));
 
 /*ROUTES*/
 
-app.use('/test' ,async (req: Request, res: Response) => {
+// app.use('/test' ,async (req: Request, res: Response) => {
 
-  const result = await findById(17)
-  return res.json(result)
-})
+//   const result = await findById(17)
+//   return res.json(result)
+// })
 
 /*Error Handling*/
 app.use((err: Error, req: Request, res: Response) => {
