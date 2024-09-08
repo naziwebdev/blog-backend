@@ -39,3 +39,14 @@ export const findByTitle = async (title: TagTypes) => {
     throw error;
   }
 };
+
+export const remove = async (id: number) => {
+  try {
+    const query = "DELETE FROM tags WHERE id=?";
+    const [tag] = await db.execute<ITag[]>(query, [id]);
+
+    return tag[0];
+  } catch (error) {
+    throw error;
+  }
+};
