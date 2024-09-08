@@ -17,7 +17,7 @@ export interface IUserCount extends ResultSetHeader {
   count: number;
 }
 
-//parameters function types & req.body types
+//function parameters types & req.body types
 export type createUserTypes = {
   name: string;
   username: string;
