@@ -27,7 +27,7 @@ app.use((0, cookie_parser_1.default)());
 app.use(express_1.default.static(path_1.default.resolve(__dirname, "..", "public")));
 /*ROUTES*/
 app.use('/test', async (req, res) => {
-    const result = await (0, users_1.findByUsername)({ username: 'nazi777' });
+    const result = await (0, users_1.findById)(17);
     return res.json(result);
 });
 /*Error Handling*/

@@ -25,6 +25,4 @@ export type createUserTypes = {
   password: string;
 };
 
-export type findByUsernameType = {
-  username: string;
-};
+
