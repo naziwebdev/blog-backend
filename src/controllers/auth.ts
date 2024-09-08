@@ -1,44 +1,111 @@
-import { Request,Response,NextFunction } from "express"
+import { Request, Response, NextFunction } from "express";
+import { IUser, createUserTypes } from "../models/user.model";
+import registerSchema from "../validators/register";
+import * as User from "../repositories/users";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+import configs from "../configs";
 
-export const register = async (req:Request,res:Response,next:NextFunction) => {
-    try {
-        
-    } catch (error) {
-        next(error)
+export const register = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { name, username, email, password } = req.body as createUserTypes;
+   
+
+    await registerSchema.validate({ name, username, email, password });
+
+    const existUser: IUser = await User.findByUsername(username);
+
+    if (existUser) {
+      return res.status(409).json({ message: "user exist already" });
     }
-}
 
+    const hashedPassword = await bcrypt.hash(password, 12);
 
-export const login = async (req:Request,res:Response,next:NextFunction) => {
-    try {
-        
-    } catch (error) {
-        next(error)
-    }
-}
+    const user: IUser = await User.create({
+      name,
+      username,
+      email,
+      password: hashedPassword,
+    });
 
+    const accessToken = jwt.sign(
+      { id: user.id },
+      configs.auth.accessTokenSecretKey!,
+      {
+        expiresIn: configs.auth.accessTokenExpireIn + "s",
+      }
+    );
 
-export const getMe = async (req:Request,res:Response,next:NextFunction) => {
-    try {
-        
-    } catch (error) {
-        next(error)
-    }
-}
+    const refreshToken = jwt.sign(
+      { id: user.id },
+      configs.auth.refreshTokenAccessKey!,
+      {
+        expiresIn: configs.auth.refreshTokenExpireIn + "s",
+      }
+    );
 
-export const refresh = async (req:Request,res:Response,next:NextFunction) => {
-    try {
-        
-    } catch (error) {
-        next(error)
-    }
-}
+    res.cookie("access-token", accessToken, {
+      httpOnly: true,
+      maxAge: 500000,
+      sameSite: "strict",
+    });
 
+    res.cookie("refresh-token", refreshToken, {
+      httpOnly: true,
+      maxAge: 900000,
+      sameSite: "strict",
+    });
 
-export const logOut = async (req:Request,res:Response,next:NextFunction) => {
-    try {
-        
-    } catch (error) {
-        next(error)
-    }
-}
+    return res.status(201).json({ message: "user register successfully" });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const login = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getMe = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const refresh = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const logOut = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+  } catch (error) {
+    next(error);
+  }
+};
