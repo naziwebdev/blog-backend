@@ -25,10 +25,7 @@ export type createUserTypes = {
   password: string;
 };
 
-
-
-
-
-
-
-
+export type loginBodyTypes = {
+  username: string;
+  password: string;
+};

@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
-import { IUser, createUserTypes } from "../models/user.model";
+import { IUser, createUserTypes, loginBodyTypes } from "../models/user.model";
 import registerSchema from "../validators/register";
+import loginSchema from "../validators/login";
 import * as User from "../repositories/users";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
@@ -13,7 +14,6 @@ export const register = async (
 ) => {
   try {
     const { name, username, email, password } = req.body as createUserTypes;
-   
 
     await registerSchema.validate({ name, username, email, password });
 
@@ -71,6 +71,55 @@ export const login = async (
   res: Response,
   next: NextFunction
 ) => {
+  const { username, password } = req.body as loginBodyTypes;
+
+  await loginSchema.validate({ username, password });
+
+  const user = await User.findByUsername(username);
+
+  if (!user) {
+    return res
+      .status(409)
+      .json({ message: "username or password is incorrrect" });
+  }
+
+  const validatePassword = await bcrypt.compare(password, user.password);
+  if (!validatePassword) {
+    return res
+      .status(409)
+      .json({ message: "username or password is incorrrect" });
+  }
+
+  const accessToken = jwt.sign(
+    { id: user.id },
+    configs.auth.accessTokenSecretKey!,
+    {
+      expiresIn: configs.auth.accessTokenExpireIn + "s",
+    }
+  );
+
+  const refreshToken = jwt.sign(
+    { id: user.id },
+    configs.auth.refreshTokenAccessKey!,
+    {
+      expiresIn: configs.auth.refreshTokenExpireIn + "s",
+    }
+  );
+
+  res.cookie("access-token", accessToken, {
+    httpOnly: true,
+    maxAge: 500000,
+    sameSite: "strict",
+  });
+
+  res.cookie("refresh-token", refreshToken, {
+    httpOnly: true,
+    maxAge: 900000,
+    sameSite: "strict",
+  });
+
+  return res.status(200).json({ message: "user login successfully" });
+
   try {
   } catch (error) {
     next(error);
