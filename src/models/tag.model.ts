@@ -11,7 +11,5 @@ export interface ITag extends RowDataPacket {
 // function parameters types & req.body types
 
 export type createTagTypes = {
-  id: number;
   title: string;
-  created_at: Date;
 };
