@@ -17,10 +17,14 @@ export interface IUserCount extends ResultSetHeader {
   count: number;
 }
 
-//input function types
+//parameters function types
 export type createUserTypes = {
   name: string;
   username: string;
   email: string;
   password: string;
+};
+
+export type findByUsernameType = {
+  username: string;
 };

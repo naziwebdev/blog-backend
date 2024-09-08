@@ -2,7 +2,7 @@ import express, { Request, Response } from "express";
 import path from "path";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import {create} from "./repositories/users";
+import {findByUsername} from "./repositories/users";
 
 
 const app = express();
@@ -33,7 +33,7 @@ app.use(express.static(path.resolve(__dirname, "..", "public")));
 
 app.use('/test' ,async (req: Request, res: Response) => {
 
-  const result = await create({name:'nazi',username:'nazi777',email:'nazi@gmail.com',password:'Pr_7777777'}) 
+  const result = await findByUsername({username:'nazi777'}) 
   return res.json(result)
 })
 

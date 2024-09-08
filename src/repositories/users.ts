@@ -1,6 +1,11 @@
 import db from "../db";
 import { RowDataPacket, FieldPacket } from "mysql2";
-import { createUserTypes, IUserCount, IUser } from "../models/user.model";
+import {
+  createUserTypes,
+  IUserCount,
+  IUser,
+  findByUsernameType,
+} from "../models/user.model";
 
 export const create = async ({
   name,
@@ -32,4 +37,12 @@ export const create = async ({
   ]);
 
   return mainUser[0];
+};
+
+export const findByUsername = async ({ username }: findByUsernameType) => {
+  const query = "SELECT * FROM users WHERE username=?";
+
+  const [user] = await db.execute<IUser[]>(query, [username]);
+
+  return user[0];
 };
