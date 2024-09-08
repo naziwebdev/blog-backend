@@ -10,6 +10,6 @@ export interface ITag extends RowDataPacket {
 
 // function parameters types & req.body types
 
-export type createTagTypes = {
+export type TagTypes = {
   title: string;
 };
