@@ -43,6 +43,19 @@ export const getAll = async (
 
 export const edit = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    const { title } = req.body as TagTypes;
+
+    await tagSchema.validate({ title });
+
+    const tagId = parseInt(req.params.id, 10);
+
+    if (isNaN(tagId) || tagId <= 0) {
+      return res.status(400).json({ error: "Invalid tag ID" });
+    }
+
+    await Tag.update(tagId, title);
+
+    return res.status(200).json({ message: "tag updated successfully" });
   } catch (error) {
     next(error);
   }
