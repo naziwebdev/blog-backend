@@ -1,8 +1,8 @@
 import db from "../db";
-import { ITag, TagTypes } from "../models/tag.model";
+import { ITag} from "../models/tag.model";
 import { RowDataPacket } from "mysql2";
 
-export const create = async (title: TagTypes) => {
+export const create = async (title:string) => {
   try {
     const query = "INSERT INTO tags (title) VALUES (?)";
     const [tag] = await db.execute<RowDataPacket[]>(query, [title]);
@@ -29,7 +29,7 @@ export const getAll = async () => {
   }
 };
 
-export const findByTitle = async (title: TagTypes) => {
+export const findByTitle = async (title:string) => {
   try {
     const query = "SELECT * FROM tags WHERE title=?";
     const [tag] = await db.execute<ITag[]>(query, [title]);
