@@ -8,6 +8,7 @@ const path_1 = __importDefault(require("path"));
 const cors_1 = __importDefault(require("cors"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const auth_1 = __importDefault(require("./routes/auth"));
+const tag_1 = __importDefault(require("./routes/tag"));
 const app = (0, express_1.default)();
 /*CORS POLICY*/
 const corsOptions = {
@@ -27,6 +28,7 @@ app.use((0, cookie_parser_1.default)());
 app.use(express_1.default.static(path_1.default.resolve(__dirname, "..", "public")));
 /*ROUTES*/
 app.use("/auth", auth_1.default);
+app.use("/tags", tag_1.default);
 /*Error Handling*/
 app.use((err, req, res) => {
     return res.status(500).json({ mrssage: err.message });
