@@ -3,6 +3,7 @@ import path from "path";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import authRouter from "./routes/auth";
+import tagsRouter from "./routes/tag";
 
 const app = express();
 
@@ -31,6 +32,7 @@ app.use(express.static(path.resolve(__dirname, "..", "public")));
 /*ROUTES*/
 
 app.use("/auth", authRouter);
+app.use("/tags", tagsRouter);
 
 /*Error Handling*/
 app.use((err: Error, req: Request, res: Response) => {
