@@ -17,7 +17,7 @@ export const register = async (
 
     await registerSchema.validate({ name, username, email, password });
 
-    const existUser: IUser = await User.findByUsername(username);
+    const existUser: IUser | null = await User.findByUsername(username);
 
     if (existUser) {
       return res.status(409).json({ message: "user exist already" });
@@ -25,7 +25,7 @@ export const register = async (
 
     const hashedPassword = await bcrypt.hash(password, 12);
 
-    const user: IUser = await User.create({
+    const user: IUser | null = await User.create({
       name,
       username,
       email,
@@ -75,7 +75,7 @@ export const login = async (
 
   await loginSchema.validate({ username, password });
 
-  const user = await User.findByUsername(username);
+  const user:IUser | null = await User.findByUsername(username);
 
   if (!user) {
     return res

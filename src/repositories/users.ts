@@ -52,7 +52,7 @@ export const findByUsername = async (username: string) => {
 
 export const findById = async (id: number) => {
   try {
-    const query = "SELECT * FROM users WHERE id=?";
+    const query = "SELECT id,name,username,email,role,avatar,provider FROM users WHERE id=?";
 
     const [user] = await db.execute<IUser[]>(query, [id]);
 

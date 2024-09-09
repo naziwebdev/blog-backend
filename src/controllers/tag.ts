@@ -13,13 +13,13 @@ export const create = async (
 
     await tagSchema.validate({ title });
 
-    const existTag = await Tag.findByTitle(title);
+    const existTag: ITag | null = await Tag.findByTitle(title);
 
     if (existTag) {
       return res.status(409).json({ message: "this tag exist already" });
     }
 
-    const tag = await Tag.create(title);
+    const tag: ITag | null = await Tag.create(title);
 
     return res.status(201).json({ message: "tag created successfully", tag });
   } catch (error) {
@@ -33,7 +33,7 @@ export const getAll = async (
   next: NextFunction
 ) => {
   try {
-    const tags = await Tag.getAll();
+    const tags: ITag[] | [] = await Tag.getAll();
 
     return res.status(200).json(tags);
   } catch (error) {
