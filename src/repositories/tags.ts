@@ -45,7 +45,7 @@ export const remove = async (id: number) => {
     const query = "DELETE FROM tags WHERE id=?";
     const [tag] = await db.execute<ITag[]>(query, [id]);
 
-    return tag[0];
+    return true;
   } catch (error) {
     throw error;
   }

@@ -30,7 +30,9 @@ app.use(express_1.default.static(path_1.default.resolve(__dirname, "..", "public
 app.use("/auth", auth_1.default);
 app.use("/tags", tag_1.default);
 /*Error Handling*/
-app.use((err, req, res) => {
-    return res.status(500).json({ mrssage: err.message });
+app.use((err, req, res, next) => {
+    return res
+        .status(500)
+        .json({ mrssage: err.message ? err.message : "internal server error" });
 });
 exports.default = app;

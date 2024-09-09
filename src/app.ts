@@ -1,4 +1,4 @@
-import express, { Request, Response } from "express";
+import express, { NextFunction, Request, Response } from "express";
 import path from "path";
 import cors from "cors";
 import cookieParser from "cookie-parser";
@@ -35,8 +35,10 @@ app.use("/auth", authRouter);
 app.use("/tags", tagsRouter);
 
 /*Error Handling*/
-app.use((err: Error, req: Request, res: Response) => {
-  return res.status(500).json({ mrssage: err.message });
+app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+  return res
+    .status(500)
+    .json({ mrssage: err.message ? err.message : "internal server error" });
 });
 
 export default app;
