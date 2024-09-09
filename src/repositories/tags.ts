@@ -23,7 +23,7 @@ export const getAll = async () => {
     const query = "SELECT * FROM tags";
     const [tags] = await db.execute<ITag[]>(query);
 
-    return tags[0];
+    return tags;
   } catch (error) {
     throw error;
   }

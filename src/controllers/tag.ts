@@ -33,6 +33,9 @@ export const getAll = async (
   next: NextFunction
 ) => {
   try {
+    const tags = await Tag.getAll();
+
+    return res.status(200).json(tags);
   } catch (error) {
     next(error);
   }
