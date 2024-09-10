@@ -46,7 +46,7 @@ export const getAll = async () => {
 
 export const remove = async (id: number) => {
   try {
-    const query = "DELERE FROM articles WHERE id=?";
+    const query = "DELETE FROM articles WHERE id=?";
     await db.execute<RowDataPacket[]>(query, [id]);
 
     return true;
