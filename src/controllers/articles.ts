@@ -55,6 +55,8 @@ export const getAll = async (
   next: NextFunction
 ) => {
   try {
+    const articles: IArticle[] = await Article.getAll();
+    return res.status(200).json(articles);
   } catch (error) {
     next(error);
   }

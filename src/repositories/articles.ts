@@ -32,3 +32,14 @@ export const create = async ({
     throw error;
   }
 };
+
+export const getAll = async () => {
+  try {
+    const query = "SELECT * FROM articles ORDER BY id DESC";
+    const [articles] = await db.execute<IArticle[]>(query);
+
+    return articles;
+  } catch (error) {
+    throw error;
+  }
+};
