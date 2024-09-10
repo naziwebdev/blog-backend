@@ -3,7 +3,7 @@ import path from 'path'
 import { Request } from "express";
 
 
- export const multerStorage = (destination:string , validFormat = /png | jpeg | jpg | webp /) => {
+ export const multerStorage = (destination:string , validFormat = /png|jpeg|jpg|webp/) => {
 
 
 const storage = multer.diskStorage({

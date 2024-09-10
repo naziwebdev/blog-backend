@@ -21,3 +21,9 @@ export type articleTypes = {
   author_id:number;
   cover?:string;
 };
+
+export type articleBodyTypes = {
+  title: string;
+  content: string;
+  slug: string;
+};
