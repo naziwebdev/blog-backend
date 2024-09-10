@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from "express";
+import articleSchema from "../validators/article";
 
 export const create = async (
   req: Request,
