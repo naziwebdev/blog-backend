@@ -43,3 +43,14 @@ export const getAll = async () => {
     throw error;
   }
 };
+
+export const remove = async (id: number) => {
+  try {
+    const query = "DELERE FROM articles WHERE id=?";
+    await db.execute<RowDataPacket[]>(query, [id]);
+
+    return true;
+  } catch (error) {
+    throw error;
+  }
+};
