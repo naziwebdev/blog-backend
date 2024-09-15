@@ -52,7 +52,7 @@ export const findTagsArticles = async (tagId: number) => {
               articles_tags.tag_id = tags.id
               WHERE tags.id = ?`;
 
-    const [articles] = await db.execute(query, [tagId]);
+    const [articles] = await db.execute<ITag[]>(query, [tagId]);
 
     return articles;
   } catch (error) {

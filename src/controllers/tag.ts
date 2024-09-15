@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import tagSchema from "../validators/tag";
 import * as Tag from "../repositories/tags";
 import { ITag, TagTypes , slugTypeParam } from "../models/tag.model";
+import { calculateRelativeTimeDifference } from "../utils/formatTime";
 
 
 
@@ -42,6 +43,12 @@ export const findtagsArticles = async (
      const tag = await Tag.findByTitle(slug)
 
      const articles = await Tag.findTagsArticles(tag.id)
+
+
+     articles?.forEach((article:any) => {
+      article.created_at = calculateRelativeTimeDifference(article.created_at)
+     })
+
 
 
     return res.status(200).json({tag:tag.title,articles})
