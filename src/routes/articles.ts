@@ -6,7 +6,7 @@ import { multerStorage } from "../middlewares/uploaderConfigs";
 
 const router: Router = Router();
 
-const uploader = multerStorage("public/images/articles");
+const uploader = multerStorage();
 
 router
   .route("/")

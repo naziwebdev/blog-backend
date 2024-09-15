@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import articleSchema from "../validators/article";
 import * as Article from "../repositories/articles";
+import sharp from "sharp";
 import { IUser } from "../models/user.model";
 import {
   IArticle,
@@ -8,6 +9,7 @@ import {
   articleBodyTypes,
 } from "../models/article.model";
 import slugify from "slugify";
+import path from "path";
 
 interface CustomRequest extends Request {
   user: IUser;
@@ -27,27 +29,39 @@ export const create = async (
 
     await articleSchema.validate({ title, content, slug });
 
-    if (!req.file?.filename) {
-      return res.status(404).json({ message: "not found file" });
+    if (!req.file) {
+      return res.status(404).json({ message: "not found file...!" });
     }
 
-    const cover = `images/articles/${req.file.filename}`;
+    const extFile = path.extname(req.file.originalname);
+    console.log(req.file, extFile);
+    const unique = Date.now() * Math.floor(Math.random() * 1e9);
+    const bufferFile = req.file.buffer;
+    const pathFile = `/images/articles/${unique}${extFile}`;
+
+    if (extFile === ".png") {
+      sharp(bufferFile).png({ quality: 60 }).toFile(`./public${pathFile}`);
+    } else if (extFile === ".jpeg") {
+      sharp(bufferFile).jpeg({ quality: 60 }).toFile(`./public${pathFile}`);
+    } else if (extFile === ".webp") {
+      sharp(bufferFile).webp({ quality: 60 }).toFile(`./public${pathFile}`);
+    } else {
+      sharp(bufferFile).toFile(`./public${pathFile}`);
+    }
 
     const article: IArticle = await Article.create({
       title,
       content,
       slug,
       author_id,
-      cover,
+      cover: pathFile,
     });
 
     tags?.forEach(async (tag) => {
       await Article.addTag(article.id, tag);
     });
 
-    return res
-      .status(201)
-      .json({ message: "article created successfully", article });
+    return res.status(201).json({ message: "article created successfully" });
   } catch (error) {
     next(error);
   }
