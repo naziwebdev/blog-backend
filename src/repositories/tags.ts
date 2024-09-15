@@ -20,8 +20,10 @@ export const create = async (title: string) => {
 
 export const getAll = async () => {
   try {
+    const query = "SELECT * FROM tags";
+    const [tags] = await db.execute<ITag[]>(query);
 
-    //codes
+    return tags;
   } catch (error) {
     throw error;
   }

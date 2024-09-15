@@ -21,7 +21,7 @@ export const create = async (
   try {
     const author_id = (req as CustomRequest).user.id;
 
-    let { title, content, slug } = req.body as articleBodyTypes;
+    let { title, content, slug, tags } = req.body as articleBodyTypes;
 
     slug = slugify(slug, { lower: true });
 
@@ -39,6 +39,10 @@ export const create = async (
       slug,
       author_id,
       cover,
+    });
+
+    tags?.forEach(async (tag) => {
+      await Article.addTag(article.id, tag);
     });
 
     return res

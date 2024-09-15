@@ -15,6 +15,7 @@ const articleSchema = yup.object().shape({
     .min(3, "slug must be at least 3 char")
     .max(50, "slug max char must be 50")
     .required("slug is required"),
+  tags: yup.array().optional(),
 });
 
 export default articleSchema;

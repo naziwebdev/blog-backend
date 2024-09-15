@@ -55,11 +55,11 @@ export const remove = async (id: number) => {
   }
 };
 
-export const addTag = async (tagId: number[], articleId: number) => {
+export const addTag = async (articleId: number,tagId:number) => {
   try {
     const query = "INSERT INTO articles_tags VALUES(NULL,?,?)";
 
-    await db.execute(query, [tagId, articleId]);
+    await db.execute(query, [articleId,tagId]);
 
     return true;
   } catch (error) {

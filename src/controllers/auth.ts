@@ -50,13 +50,13 @@ export const register = async (
 
     res.cookie("access-token", accessToken, {
       httpOnly: true,
-      maxAge: 500000,
+      maxAge:9000000,
       sameSite: "strict",
     });
 
     res.cookie("refresh-token", refreshToken, {
       httpOnly: true,
-      maxAge: 900000,
+      maxAge: 9000000,
       sameSite: "strict",
     });
 
@@ -108,13 +108,13 @@ export const login = async (
 
   res.cookie("access-token", accessToken, {
     httpOnly: true,
-    maxAge: 500000,
+    maxAge: 9000000,
     sameSite: "strict",
   });
 
   res.cookie("refresh-token", refreshToken, {
     httpOnly: true,
-    maxAge: 900000,
+    maxAge:9000000,
     sameSite: "strict",
   });
 

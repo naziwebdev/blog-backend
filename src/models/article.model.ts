@@ -26,4 +26,5 @@ export type articleBodyTypes = {
   title: string;
   content: string;
   slug: string;
+  tags?:number[];
 };
