@@ -12,7 +12,24 @@ export interface IArticle extends RowDataPacket {
   cover: string;
 }
 
+
 // function parameters types & req.body types
+
+export type articlesFormattedTypes =  {
+    id:number;
+    title:string;
+    content:string;
+    slug:string;
+    cover:string;
+    author:{
+      name:string;
+      username:string;
+      avatar:string;
+    },
+    tags:string[];
+    createdAt:Date;
+   
+}
 
 export type articleTypes = {
   title: string;

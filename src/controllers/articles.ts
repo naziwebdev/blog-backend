@@ -5,7 +5,7 @@ import sharp from "sharp";
 import { IUser } from "../models/user.model";
 import {
   IArticle,
-  articleTypes,
+  articlesFormattedTypes,
   articleBodyTypes,
 } from "../models/article.model";
 import slugify from "slugify";
@@ -73,7 +73,7 @@ export const getAll = async (
   next: NextFunction
 ) => {
   try {
-    const articles: IArticle[] = await Article.getAll();
+    const articles:articlesFormattedTypes[] = await Article.getAll();
     return res.status(200).json(articles);
   } catch (error) {
     next(error);
@@ -87,6 +87,21 @@ export const getBySlug = async (
 ) => {
   try {
 
+
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const searchArticles = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+
+    const search = req.query.q as string
+   
+
+    const articles= await Article.searchArticles(search)
+
+    return res.status(200).json({searchValue:search,articles})
 
   } catch (error) {
     next(error);

@@ -1,6 +1,6 @@
 import db from "../db";
 import { RowDataPacket } from "mysql2";
-import { IArticle, articleTypes } from "../models/article.model";
+import { IArticle, articleTypes,articlesFormattedTypes } from "../models/article.model";
 import { calculateRelativeTimeDifference } from "../utils/formatTime";
 import { ITag } from "../models/tag.model";
 
@@ -45,7 +45,7 @@ export const getAll = async () => {
     const [articles] = await db.execute<IArticle[]>(query);
 
 
-    const formattedArticles = []
+    const formattedArticles:articlesFormattedTypes[] = []
 
     for(const article of articles){
 
@@ -104,3 +104,26 @@ export const addTag = async (articleId: number, tagId: number) => {
     throw error;
   }
 };
+
+
+export const searchArticles = async (searchValue:string) => {
+  try {
+
+    const query = `  SELECT articles.id,articles.title,articles.content,articles.slug,articles.cover,users.username,users.avatar,users.name,
+   tags.title FROM articles
+   JOIN articles_tags ON
+   articles_tags.article_id = articles.id
+   JOIN tags ON
+   articles_tags.tag_id = tags.id
+   JOIN users ON
+   users.id = articles.author_id
+   WHERE articles.title LIKE ? OR articles.content LIKE ? OR tags.title LIKE ?
+   GROUP BY articles.id`
+    const [articles] = await db.execute<IArticle[]>(query,[`%${searchValue}%`,`%${searchValue}%`,`%${searchValue}%`])
+
+    return articles
+    
+  } catch (error) {
+    throw error
+  }
+}
