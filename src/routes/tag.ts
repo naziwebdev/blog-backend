@@ -5,8 +5,10 @@ import isAdmin from "../middlewares/isAdmin";
 
 const router: Router = Router();
 
-router.route("/").post(auth,isAdmin,controller.create).get(controller.getAll);
-router.route("/:id").delete(auth,isAdmin,controller.remove).put(auth,isAdmin,controller.edit);
+
+router.route("/").post(auth,isAdmin,controller.create).get(controller.getAll)
 router.route("/:slug").get(controller.findtagsArticles);
+router.route("/:id").delete(auth,isAdmin,controller.remove).put(auth,isAdmin,controller.edit);
+
 
 export default router;

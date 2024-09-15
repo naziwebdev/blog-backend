@@ -13,3 +13,8 @@ export interface ITag extends RowDataPacket {
 export type TagTypes = {
   title: string;
 };
+
+
+export type slugTypeParam = {
+  slug:string
+}

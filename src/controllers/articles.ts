@@ -86,6 +86,8 @@ export const getBySlug = async (
   next: NextFunction
 ) => {
   try {
+
+
   } catch (error) {
     next(error);
   }

@@ -40,6 +40,26 @@ export const findByTitle = async (title: string) => {
   }
 };
 
+export const findTagsArticles = async (tagId: number) => {
+  try {
+    const query = `SELECT articles.title,articles.content,articles.slug,articles.cover,articles.created_at,articles.updated_at,
+               users.name As author,tags.title As tag FROM articles_tags
+               JOIN articles ON
+               articles_tags.article_id = articles.id
+               JOIN users ON
+               users.id = articles.author_id
+              JOIN tags ON
+              articles_tags.tag_id = tags.id
+              WHERE tags.id = ?`;
+
+    const [articles] = await db.execute(query, [tagId]);
+
+    return articles;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const update = async (id: number, title: string) => {
   try {
     const query = "UPDATE tags SET title=? WHERE id=?";

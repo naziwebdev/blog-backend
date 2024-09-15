@@ -1,7 +1,9 @@
 import { Request, Response, NextFunction } from "express";
 import tagSchema from "../validators/tag";
 import * as Tag from "../repositories/tags";
-import { ITag, TagTypes } from "../models/tag.model";
+import { ITag, TagTypes , slugTypeParam } from "../models/tag.model";
+
+
 
 export const create = async (
   req: Request,
@@ -27,12 +29,36 @@ export const create = async (
   }
 };
 
+
+export const findtagsArticles = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+
+    const {slug} = req.params as slugTypeParam
+
+     const tag = await Tag.findByTitle(slug)
+
+     const articles = await Tag.findTagsArticles(tag.id)
+
+
+    return res.status(200).json({tag:tag.title,articles})
+
+  } catch (error) {
+    next(error);
+  }
+};
+
+
 export const getAll = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
+  
     const tags: ITag[] | [] = await Tag.getAll();
 
     return res.status(200).json(tags);
@@ -75,17 +101,6 @@ export const remove = async (
     await Tag.remove(tagId);
 
     return res.status(200).json({ message: "tag removed successfully" });
-  } catch (error) {
-    next(error);
-  }
-};
-
-export const findtagsArticles = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
   } catch (error) {
     next(error);
   }
