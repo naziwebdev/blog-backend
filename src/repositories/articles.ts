@@ -54,3 +54,15 @@ export const remove = async (id: number) => {
     throw error;
   }
 };
+
+export const addTag = async (tagId: number[], articleId: number) => {
+  try {
+    const query = "INSERT INTO articles_tags VALUES(NULL,?,?)";
+
+    await db.execute(query, [tagId, articleId]);
+
+    return true;
+  } catch (error) {
+    throw error;
+  }
+};
