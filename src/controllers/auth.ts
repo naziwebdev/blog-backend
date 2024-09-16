@@ -7,6 +7,11 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import configs from "../configs";
 
+interface CustomRequest extends Request {
+  user: IUser;
+}
+
+
 export const register = async (
   req: Request,
   res: Response,
@@ -132,6 +137,15 @@ export const getMe = async (
   next: NextFunction
 ) => {
   try {
+
+    const userId = (req as CustomRequest).user.id
+
+    const user = await User.findById(userId)
+
+
+    return res.status(200).json(user)
+
+
   } catch (error) {
     next(error);
   }
