@@ -73,8 +73,16 @@ export const getAll = async (
 ) => {
   try {
     //pagination
+    const page = parseInt(req.query.page as any) || 1;
+    const limit = parseInt(req.query.limit as any) || 2;
+
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+
     const articles = await Article.getAll();
-    return res.status(200).json(articles);
+    const results = articles.slice(startIndex, endIndex);
+
+    return res.status(200).json({ page, limit, results });
   } catch (error) {
     next(error);
   }
@@ -132,11 +140,10 @@ export const edit = async (req: Request, res: Response, next: NextFunction) => {
       return res.status(400).json({ error: "Invalid article ID" });
     }
 
+    const existArticle: IArticle | null = await Article.findById(articleId);
 
-    const existArticle:IArticle | null =  await Article.findById(articleId)
-
-    if(!existArticle){
-      return res.status(404).json({message:'not found article'})
+    if (!existArticle) {
+      return res.status(404).json({ message: "not found article" });
     }
 
     let pathFile = null;
@@ -158,16 +165,13 @@ export const edit = async (req: Request, res: Response, next: NextFunction) => {
       }
     }
 
-
-    await Article.edit(articleId,title,content,slug,pathFile)
+    await Article.edit(articleId, title, content, slug, pathFile);
 
     tags?.forEach(async (tag) => {
       await Article.addTag(articleId, tag);
     });
 
-
-    return res.status(200).json({message:'article updated successfully'})
-
+    return res.status(200).json({ message: "article updated successfully" });
   } catch (error) {
     next(error);
   }
