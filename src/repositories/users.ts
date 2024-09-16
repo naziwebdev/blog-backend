@@ -1,6 +1,11 @@
 import db from "../db";
 import { RowDataPacket } from "mysql2";
-import { createUserTypes, IUserCount, IUser } from "../models/user.model";
+import {
+  createUserTypes,
+  IUserCount,
+  IUser,
+  IUserRole,
+} from "../models/user.model";
 
 export const create = async ({
   name,
@@ -86,28 +91,41 @@ export const changePassword = async (password: string, userId: number) => {
   }
 };
 
-
-export const uploadAvatar = async (avatar:string,userId:number) => {
+export const uploadAvatar = async (avatar: string, userId: number) => {
   try {
-
-    const query = `UPDATE users SET avatar=? WHERE id=?`
-    await db.execute<RowDataPacket[]>(query,[avatar,userId])
-    return true
-    
+    const query = `UPDATE users SET avatar=? WHERE id=?`;
+    await db.execute<RowDataPacket[]>(query, [avatar, userId]);
+    return true;
   } catch (error) {
-    throw error
+    throw error;
   }
-}
+};
 
-
-export const edit = async (name:string,username:string,email:string,userId:number) => {
+export const edit = async (
+  name: string,
+  username: string,
+  email: string,
+  userId: number
+) => {
   try {
-
-    const query = `UPDATE users SET name=?,username=?,email=? WHERE id=?`
-    await db.execute<RowDataPacket[]>(query,[name,username,email,userId])
-    return true
-    
+    const query = `UPDATE users SET name=?,username=?,email=? WHERE id=?`;
+    await db.execute<RowDataPacket[]>(query, [name, username, email, userId]);
+    return true;
   } catch (error) {
-    throw error
+    throw error;
   }
-}
+};
+
+export const changeRole = async (userId: number) => {
+  try {
+    const getUserRoleQuery = `SELECT role FROM users WHERE id=?`;
+    const [role] = await db.execute<IUserRole[]>(getUserRoleQuery, [userId]);
+
+    const detectedRole = (role[0].role = "user" ? "admin" : "user");
+
+    const query = `UPDATE users SET role=? WHERE id=?`;
+    await db.execute<RowDataPacket[]>(query, [detectedRole, userId]);
+
+    return true;
+  } catch (error) {}
+};

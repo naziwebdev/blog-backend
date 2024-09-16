@@ -18,6 +18,11 @@ export interface IUserCount extends ResultSetHeader {
   count: number;
 }
 
+export interface IUserRole extends ResultSetHeader {
+  role:string;
+}
+
+
 
 //function parameters types & req.body types
 export type createUserTypes = {

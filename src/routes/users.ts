@@ -12,7 +12,7 @@ router.route("/").get(auth, roleGurad("admin"), controller.getAll);
 router
   .route("/avatar")
   .post(auth, upload.single("avatar"), controller.uploadAvatar);
-router.route("/:id").put(auth,controller.edit);
-
+router.route("/:id").put(auth, controller.edit);
+router.route("/role/:id").put(auth, roleGurad("admin"), controller.changeRole);
 
 export default router;

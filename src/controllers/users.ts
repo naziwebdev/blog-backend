@@ -107,3 +107,28 @@ export const changePassword = async (
     next(error);
   }
 };
+
+export const changeRole = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const userId = parseInt(req.params.id, 10) as number;
+
+    if (isNaN(userId) || userId <= 0) {
+      return res.status(400).json({ error: "Invalid tag ID" });
+    }
+
+    const existUser:IUser = await User.findById(userId);
+    if (!existUser) {
+      return res.status(422).json({ message: "userID is invalid" });
+    }
+
+    await User.changeRole(userId);
+
+    return res.status(200).json({ message: "user-role updated successfully" });
+  } catch (error) {
+    next(error);
+  }
+};
