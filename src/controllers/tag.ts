@@ -76,6 +76,13 @@ export const edit = async (req: Request, res: Response, next: NextFunction) => {
       return res.status(400).json({ error: "Invalid tag ID" });
     }
 
+    const existTagd:ITag | null = await Tag.findById(tagId)
+
+    if(!existTagd){
+      return res.status(404).json({message:'not found tag'})
+    }
+
+
     await Tag.update(tagId, title);
 
     return res.status(200).json({ message: "tag updated successfully" });

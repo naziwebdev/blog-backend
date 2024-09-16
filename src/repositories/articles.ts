@@ -109,6 +109,20 @@ export const addTag = async (articleId: number, tagId: number) => {
   }
 };
 
+export const findById = async (articleId:number) => {
+  try {
+
+    const query = `SELECT * FROM articles WHERE id=?`
+
+    const [article] = await db.execute<IArticle[]>(query,[articleId])
+
+    return article[0]
+    
+  } catch (error) {
+    throw error
+  }
+}
+
 export const searchArticles = async (searchValue: string) => {
   try {
     const query = `  SELECT articles.id,articles.title,articles.content,articles.slug,articles.cover,users.username,users.avatar,users.name,
@@ -165,16 +179,18 @@ export const edit = async (
   title: string,
   content: string,
   slug: string,
-  cover: string
+  cover: string | null
 ) => {
   try {
     const query = `UPDATE articles SET title=?,content=?,slug=?,
     cover=? WHERE id=?`;
 
-    await db.execute(query,[title,content,slug,cover,articleId])
+    await db.execute<RowDataPacket[]>(query,[title,content,slug,cover,articleId])
 
     return true  
   } catch (error) {
     throw error
   }
 };
+
+

@@ -60,6 +60,20 @@ export const findTagsArticles = async (tagId: number) => {
   }
 };
 
+export const findById = async (tagId:number) => {
+  try {
+
+    const query = `SELECT * FROM tags WHERE id=?`
+
+    const [tag] = await db.execute<ITag[]>(query,[tagId])
+
+    return tag[0]
+    
+  } catch (error) {
+    throw error
+  }
+}
+
 export const update = async (id: number, title: string) => {
   try {
     const query = "UPDATE tags SET title=? WHERE id=?";

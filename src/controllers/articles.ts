@@ -132,6 +132,13 @@ export const edit = async (req: Request, res: Response, next: NextFunction) => {
       return res.status(400).json({ error: "Invalid article ID" });
     }
 
+
+    const existArticle:IArticle | null =  await Article.findById(articleId)
+
+    if(!existArticle){
+      return res.status(404).json({message:'not found article'})
+    }
+
     let pathFile = null;
 
     if (req.file) {
@@ -151,9 +158,15 @@ export const edit = async (req: Request, res: Response, next: NextFunction) => {
       }
     }
 
-    // tags?.forEach(async (tag) => {
-    //   await Article.addTag(article.id, tag);
-    // });
+
+    await Article.edit(articleId,title,content,slug,pathFile)
+
+    tags?.forEach(async (tag) => {
+      await Article.addTag(articleId, tag);
+    });
+
+
+    return res.status(200).json({message:'article updated successfully'})
 
   } catch (error) {
     next(error);
