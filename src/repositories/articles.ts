@@ -159,3 +159,22 @@ export const findBySlug = async (slug: string) => {
     throw error;
   }
 };
+
+export const edit = async (
+  articleId: number,
+  title: string,
+  content: string,
+  slug: string,
+  cover: string
+) => {
+  try {
+    const query = `UPDATE articles SET title=?,content=?,slug=?,
+    cover=? WHERE id=?`;
+
+    await db.execute(query,[title,content,slug,cover,articleId])
+
+    return true  
+  } catch (error) {
+    throw error
+  }
+};

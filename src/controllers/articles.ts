@@ -27,14 +27,13 @@ export const create = async (
 
     slug = slugify(slug, { lower: true });
 
-    await articleSchema.validate({ title, content, slug });
+    await articleSchema.validate({ title, content, slug, tags });
 
     if (!req.file) {
       return res.status(404).json({ message: "not found file...!" });
     }
 
     const extFile = path.extname(req.file.originalname);
-    console.log(req.file, extFile);
     const unique = Date.now() * Math.floor(Math.random() * 1e9);
     const bufferFile = req.file.buffer;
     const pathFile = `/images/articles/${unique}${extFile}`;
@@ -121,6 +120,41 @@ export const searchArticles = async (
 
 export const edit = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    let { title, content, slug, tags } = req.body as articleBodyTypes;
+
+    await articleSchema.validate({ title, content, slug, tags });
+
+    slug = slugify(slug, { lower: true });
+
+    const articleId = parseInt(req.params.id, 10);
+
+    if (isNaN(articleId) || articleId <= 0) {
+      return res.status(400).json({ error: "Invalid article ID" });
+    }
+
+    let pathFile = null;
+
+    if (req.file) {
+      const extFile = path.extname(req.file.originalname);
+      const unique = Date.now() * Math.floor(Math.random() * 1e9);
+      const bufferFile = req.file.buffer;
+      pathFile = `/images/articles/${unique}${extFile}`;
+
+      if (extFile === ".png") {
+        sharp(bufferFile).png({ quality: 60 }).toFile(`./public${pathFile}`);
+      } else if (extFile === ".jpeg") {
+        sharp(bufferFile).jpeg({ quality: 60 }).toFile(`./public${pathFile}`);
+      } else if (extFile === ".webp") {
+        sharp(bufferFile).webp({ quality: 60 }).toFile(`./public${pathFile}`);
+      } else {
+        sharp(bufferFile).toFile(`./public${pathFile}`);
+      }
+    }
+
+    // tags?.forEach(async (tag) => {
+    //   await Article.addTag(article.id, tag);
+    // });
+
   } catch (error) {
     next(error);
   }
