@@ -6,11 +6,11 @@ import * as User from "../repositories/users";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import configs from "../configs";
+import { JwtPayload } from "jsonwebtoken";
 
 interface CustomRequest extends Request {
   user: IUser;
 }
-
 
 export const register = async (
   req: Request,
@@ -55,7 +55,7 @@ export const register = async (
 
     res.cookie("access-token", accessToken, {
       httpOnly: true,
-      maxAge:9000000,
+      maxAge: 9000000,
       sameSite: "strict",
     });
 
@@ -80,7 +80,7 @@ export const login = async (
 
   await loginSchema.validate({ username, password });
 
-  const user:IUser | null = await User.findByUsername(username);
+  const user: IUser | null = await User.findByUsername(username);
 
   if (!user) {
     return res
@@ -119,7 +119,7 @@ export const login = async (
 
   res.cookie("refresh-token", refreshToken, {
     httpOnly: true,
-    maxAge:9000000,
+    maxAge: 9000000,
     sameSite: "strict",
   });
 
@@ -137,15 +137,11 @@ export const getMe = async (
   next: NextFunction
 ) => {
   try {
+    const userId = (req as CustomRequest).user.id;
 
-    const userId = (req as CustomRequest).user.id
+    const user = await User.findById(userId);
 
-    const user = await User.findById(userId)
-
-
-    return res.status(200).json(user)
-
-
+    return res.status(200).json(user);
   } catch (error) {
     next(error);
   }
@@ -157,6 +153,41 @@ export const refresh = async (
   next: NextFunction
 ) => {
   try {
+    const refreshToken: string = req.cookies["refresh-token"];
+
+    if (!refreshToken) {
+      return res.status(404).json({ message: "token not found" });
+    }
+
+    const payload: JwtPayload = <JwtPayload>(
+      jwt.verify(refreshToken, configs.auth.refreshTokenAccessKey!)
+    );
+
+    if (!payload) {
+      return res.status(422).json({ message: "token is invaliad" });
+    }
+
+    const user:IUser = await User.findById(payload.id);
+
+    if (!user) {
+      return res.status(422).json({ message: "token is invaliad" });
+    }
+
+    const accessToken = jwt.sign(
+      { id: user.id },
+      configs.auth.accessTokenSecretKey!,
+      {
+        expiresIn: configs.auth.accessTokenExpireIn,
+      }
+    );
+
+    res.cookie("access-token", accessToken, {
+      httpOnly: true,
+      maxAge: 9000000,
+      sameSite: "strict",
+    });
+
+    return res.json({message:'access token generate successfully'});
   } catch (error) {
     next(error);
   }
@@ -168,15 +199,11 @@ export const logOut = async (
   next: NextFunction
 ) => {
   try {
+    res.clearCookie("access-token", { httpOnly: true });
 
-  res.clearCookie('access-token', { httpOnly: true });
+    res.clearCookie("refresh-token", { httpOnly: true });
 
-
-  res.clearCookie('refresh-token', { httpOnly: true });
-
-  return res.status(200).json({message:'user logout successfully'})
-
-
+    return res.status(200).json({ message: "user logout successfully" });
   } catch (error) {
     next(error);
   }
