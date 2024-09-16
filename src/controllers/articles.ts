@@ -74,7 +74,7 @@ export const getAll = async (
   try {
     //pagination
     const page = parseInt(req.query.page as any) || 1;
-    const limit = parseInt(req.query.limit as any) || 2;
+    const limit = parseInt(req.query.limit as any) || 5;
 
     const startIndex = (page - 1) * limit;
     const endIndex = page * limit;
@@ -115,12 +115,18 @@ export const searchArticles = async (
 ) => {
   try {
     //pagination
+    const page = parseInt(req.query.page as any) || 1;
+    const limit = parseInt(req.query.limit as any) || 5;
+
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
 
     const search = req.query.q as string;
 
     const articles: IArticlePopulate[] = await Article.searchArticles(search);
+    const results = articles.slice(startIndex, endIndex);
 
-    return res.status(200).json({ searchValue: search, articles });
+    return res.status(200).json({ searchValue: search, results });
   } catch (error) {
     next(error);
   }
