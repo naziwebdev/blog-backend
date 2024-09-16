@@ -1,10 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import tagSchema from "../validators/tag";
 import * as Tag from "../repositories/tags";
-import { ITag, TagTypes , slugTypeParam } from "../models/tag.model";
+import { ITag, TagTypes, slugTypeParam } from "../models/tag.model";
 import { calculateRelativeTimeDifference } from "../utils/formatTime";
-
-
 
 export const create = async (
   req: Request,
@@ -30,34 +28,27 @@ export const create = async (
   }
 };
 
-
 export const findtagsArticles = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
+    const { slug } = req.params as slugTypeParam;
 
-    const {slug} = req.params as slugTypeParam
+    const tag = await Tag.findByTitle(slug);
 
-     const tag = await Tag.findByTitle(slug)
+    const articles = await Tag.findTagsArticles(tag.id);
 
-     const articles = await Tag.findTagsArticles(tag.id)
+    articles?.forEach((article: any) => {
+      article.created_at = calculateRelativeTimeDifference(article.created_at);
+    });
 
-
-     articles?.forEach((article:any) => {
-      article.created_at = calculateRelativeTimeDifference(article.created_at)
-     })
-
-
-
-    return res.status(200).json({tag:tag.title,articles})
-
+    return res.status(200).json({ tag: tag.title, articles });
   } catch (error) {
     next(error);
   }
 };
-
 
 export const getAll = async (
   req: Request,
@@ -65,7 +56,6 @@ export const getAll = async (
   next: NextFunction
 ) => {
   try {
-  
     const tags: ITag[] | [] = await Tag.getAll();
 
     return res.status(200).json(tags);

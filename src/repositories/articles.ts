@@ -1,6 +1,11 @@
 import db from "../db";
 import { RowDataPacket } from "mysql2";
-import { IArticle, articleTypes,articlesFormattedTypes } from "../models/article.model";
+import {
+  IArticle,
+  articleTypes,
+  articlesFormattedTypes,
+  IArticlePopulate,
+} from "../models/article.model";
 import { calculateRelativeTimeDifference } from "../utils/formatTime";
 import { ITag } from "../models/tag.model";
 
@@ -42,38 +47,37 @@ export const getAll = async () => {
          JOIN users ON
          articles.author_id = users.id
          ORDER BY articles.id DESC`;
-    const [articles] = await db.execute<IArticle[]>(query);
+    const [articles] = await db.execute<IArticlePopulate[]>(query);
 
+    const formattedArticles: articlesFormattedTypes[] = [];
 
-    const formattedArticles:articlesFormattedTypes[] = []
-
-    for(const article of articles){
-
-      const [tags] = await db.execute<ITag[]>(`SELECT tags.* FROM articles_tags
+    for (const article of articles) {
+      const [tags] = await db.execute<ITag[]>(
+        `SELECT tags.* FROM articles_tags
         JOIN tags ON
       articles_tags.tag_id = tags.id
-      WHERE articles_tags.article_id = ?`,[article.id]);
+      WHERE articles_tags.article_id = ?`,
+        [article.id]
+      );
 
-      (article as any).created_at = calculateRelativeTimeDifference(article.created_at)
+      (article as any).created_at = calculateRelativeTimeDifference(
+        article.created_at
+      );
 
-       formattedArticles.push({
-
-        id:article.id,
-        title:article.title,
-        content:article.content,
-        slug:article.slug,
-        cover:article.cover,
-        author:{
-          name:article.name,
-          username:article.username,
-          avatar:article.avatar
+      formattedArticles.push({
+        id: article.id,
+        title: article.title,
+        content: article.content,
+        slug: article.slug,
+        cover: article.cover,
+        author: {
+          name: article.name,
+          username: article.username,
+          avatar: article.avatar,
         },
-        tags:tags.map((tag) => tag.title),
-        createdAt:article.created_at
-       })
-      
-
-      
+        tags: tags.map((tag) => tag.title),
+        createdAt: article.created_at,
+      });
     }
 
     return formattedArticles;
@@ -97,7 +101,7 @@ export const addTag = async (articleId: number, tagId: number) => {
   try {
     const query = "INSERT INTO articles_tags VALUES(NULL,?,?)";
 
-    await db.execute(query, [articleId, tagId]);
+    await db.execute<RowDataPacket[]>(query, [articleId, tagId]);
 
     return true;
   } catch (error) {
@@ -105,12 +109,10 @@ export const addTag = async (articleId: number, tagId: number) => {
   }
 };
 
-
-export const searchArticles = async (searchValue:string) => {
+export const searchArticles = async (searchValue: string) => {
   try {
-
     const query = `  SELECT articles.id,articles.title,articles.content,articles.slug,articles.cover,users.username,users.avatar,users.name,
-   tags.title FROM articles
+   articles.created_at,tags.title FROM articles
    JOIN articles_tags ON
    articles_tags.article_id = articles.id
    JOIN tags ON
@@ -118,12 +120,42 @@ export const searchArticles = async (searchValue:string) => {
    JOIN users ON
    users.id = articles.author_id
    WHERE articles.title LIKE ? OR articles.content LIKE ? OR tags.title LIKE ?
-   GROUP BY articles.id`
-    const [articles] = await db.execute<IArticle[]>(query,[`%${searchValue}%`,`%${searchValue}%`,`%${searchValue}%`])
+   GROUP BY articles.id`;
+    const [articles] = await db.execute<IArticlePopulate[]>(query, [
+      `%${searchValue}%`,
+      `%${searchValue}%`,
+      `%${searchValue}%`,
+    ]);
 
-    return articles
-    
+    return articles;
   } catch (error) {
-    throw error
+    throw error;
   }
-}
+};
+
+export const findBySlug = async (slug: string) => {
+  try {
+    const query = `SELECT articles.id,articles.title,articles.content,articles.slug,articles.cover,users.username,users.avatar,users.name,
+     articles.created_at FROM articles 
+     JOIN users ON
+     articles.author_id = users.id
+     WHERE articles.slug LIKE ?`;
+
+    const [article] = await db.execute<IArticlePopulate[]>(query, [slug]);
+
+    const tagQuery = `
+    SELECT tags.title FROM tags
+    JOIN articles_tags ON
+    tags.id = articles_tags.tag_id
+    JOIN articles ON
+   articles_tags.article_id = articles.id
+   WHERE articles_tags.article_id = ?
+    `;
+
+    const [tags] = await db.execute<ITag[]>(tagQuery, [article[0].id]);
+
+    return { article: article[0], tags };
+  } catch (error) {
+    throw error;
+  }
+};

@@ -5,7 +5,7 @@ import sharp from "sharp";
 import { IUser } from "../models/user.model";
 import {
   IArticle,
-  articlesFormattedTypes,
+  IArticlePopulate,
   articleBodyTypes,
 } from "../models/article.model";
 import slugify from "slugify";
@@ -73,7 +73,8 @@ export const getAll = async (
   next: NextFunction
 ) => {
   try {
-    const articles:articlesFormattedTypes[] = await Article.getAll();
+    //pagination
+    const articles = await Article.getAll();
     return res.status(200).json(articles);
   } catch (error) {
     next(error);
@@ -86,23 +87,33 @@ export const getBySlug = async (
   next: NextFunction
 ) => {
   try {
+    const { slug } = req.params as { slug: string };
 
+    if (!slug.trim()) {
+      return res.status(404).json({ messsage: "not found slug" });
+    }
 
+    const article = await Article.findBySlug(slug);
+
+    return res.status(200).json(article);
   } catch (error) {
     next(error);
   }
 };
 
-export const searchArticles = async (req: Request, res: Response, next: NextFunction) => {
+export const searchArticles = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
+    //pagination
 
-    const search = req.query.q as string
-   
+    const search = req.query.q as string;
 
-    const articles= await Article.searchArticles(search)
+    const articles: IArticlePopulate[] = await Article.searchArticles(search);
 
-    return res.status(200).json({searchValue:search,articles})
-
+    return res.status(200).json({ searchValue: search, articles });
   } catch (error) {
     next(error);
   }
