@@ -31,3 +31,10 @@ export type loginBodyTypes = {
   username: string;
   password: string;
 };
+
+
+export type editUserTypes = {
+  name: string;
+  username: string;
+  email: string;
+}

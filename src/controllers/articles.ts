@@ -140,7 +140,7 @@ export const edit = async (req: Request, res: Response, next: NextFunction) => {
 
     slug = slugify(slug, { lower: true });
 
-    const articleId = parseInt(req.params.id, 10);
+    const articleId = parseInt(req.params.id, 10) as number;
 
     if (isNaN(articleId) || articleId <= 0) {
       return res.status(400).json({ error: "Invalid article ID" });
@@ -189,7 +189,7 @@ export const remove = async (
   next: NextFunction
 ) => {
   try {
-    const articleId = parseInt(req.params.id, 10);
+    const articleId = parseInt(req.params.id, 10 as number);
     if (isNaN(articleId) || articleId <= 0) {
       return res.status(400).json({ error: "Invalid tag ID" });
     }

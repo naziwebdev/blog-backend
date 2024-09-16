@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
-import { IUser } from "../models/user.model";
+import { IUser, editUserTypes } from "../models/user.model";
 import * as User from "../repositories/users";
-import { changePasswordSchema } from "../validators/user";
+import { changePasswordSchema, editUserSchema } from "../validators/user";
 import bcrypt from "bcryptjs";
 import path from "path";
 import sharp from "sharp";
@@ -26,6 +26,24 @@ export const getAll = async (
 
 export const edit = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    const { name, username, email } = req.body as editUserTypes;
+
+    await editUserSchema.validate({ name, username, email });
+
+    const userId = parseInt(req.params.id, 10) as number;
+
+    if (isNaN(userId) || userId <= 0) {
+      return res.status(400).json({ error: "Invalid tag ID" });
+    }
+
+    const existUser = await User.findById(userId);
+    if (!existUser) {
+      return res.status(422).json({ message: "userID is invalid" });
+    }
+
+    await User.edit(name, username, email, userId);
+
+    return res.status(200).json({ message: "user updated successfully" });
   } catch (error) {
     next(error);
   }
@@ -37,7 +55,7 @@ export const uploadAvatar = async (
   next: NextFunction
 ) => {
   try {
-    const userId = (req as CustomRequest).user.id;
+    const userId: number = (req as CustomRequest).user.id;
     if (!req.file) {
       return res.status(404).json({ message: "not found file...!" });
     }
@@ -75,7 +93,7 @@ export const changePassword = async (
 
     await changePasswordSchema.validate({ id, password });
 
-    const user = await User.findById(Number(id));
+    const user: IUser = await User.findById(Number(id));
     if (!user) {
       return res.status(404).json({ message: "not found user" });
     }
