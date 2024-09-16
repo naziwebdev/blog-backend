@@ -61,3 +61,16 @@ export const findById = async (id: number) => {
     throw error;
   }
 };
+
+
+export const getAll = async () => {
+  try {
+    const query = "SELECT id,name,username,email,role,avatar,provider FROM users";
+
+    const [user] = await db.execute<IUser[]>(query);
+
+    return user;
+  } catch (error) {
+    throw error;
+  }
+};

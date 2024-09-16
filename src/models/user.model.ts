@@ -10,8 +10,9 @@ export interface IUser extends RowDataPacket {
   email: string;
   role: string;
   provider?: string;
-  password: string;
+  password?: string;
 }
+
 
 export interface IUserCount extends ResultSetHeader {
   count: number;
