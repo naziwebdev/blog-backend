@@ -85,3 +85,16 @@ export const changePassword = async (password: string, userId: number) => {
     throw error;
   }
 };
+
+
+export const uploadAvatar = async (avatar:string,userId:number) => {
+  try {
+
+    const query = `UPDATE users SET avatar=? WHERE id=?`
+    await db.execute<RowDataPacket[]>(query,[avatar,userId])
+    return true
+    
+  } catch (error) {
+    throw error
+  }
+}
