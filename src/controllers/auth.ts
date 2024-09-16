@@ -168,6 +168,15 @@ export const logOut = async (
   next: NextFunction
 ) => {
   try {
+
+  res.clearCookie('access-token', { httpOnly: true });
+
+
+  res.clearCookie('refresh-token', { httpOnly: true });
+
+  return res.status(200).json({message:'user logout successfully'})
+
+
   } catch (error) {
     next(error);
   }
