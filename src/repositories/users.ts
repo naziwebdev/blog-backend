@@ -52,7 +52,8 @@ export const findByUsername = async (username: string) => {
 
 export const findById = async (id: number) => {
   try {
-    const query = "SELECT id,name,username,email,role,avatar,provider FROM users WHERE id=?";
+    const query =
+      "SELECT id,name,username,email,role,avatar,provider FROM users WHERE id=?";
 
     const [user] = await db.execute<IUser[]>(query, [id]);
 
@@ -62,14 +63,24 @@ export const findById = async (id: number) => {
   }
 };
 
-
 export const getAll = async () => {
   try {
-    const query = "SELECT id,name,username,email,role,avatar,provider FROM users";
+    const query =
+      "SELECT id,name,username,email,role,avatar,provider FROM users";
 
     const [user] = await db.execute<IUser[]>(query);
 
     return user;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const changePassword = async (password: string, userId: number) => {
+  try {
+    const query = `UPDATE users SET password=? WHERE id=?`;
+    await db.execute<RowDataPacket[]>(query, [password, userId]);
+    return true;
   } catch (error) {
     throw error;
   }
