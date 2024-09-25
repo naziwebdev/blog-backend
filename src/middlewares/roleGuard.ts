@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { IUser } from "../models/user.model";
+import { IUser } from "../tsTypes/user";
 
 interface CustomRequest extends Request {
   user: IUser;

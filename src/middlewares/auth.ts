@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { JwtPayload } from "jsonwebtoken";
-import { IUser } from "../models/user.model";
+import { IUser } from "../tsTypes/user";
 import { findById } from "../repositories/users";
 import configs from "../configs";
 

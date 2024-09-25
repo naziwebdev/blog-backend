@@ -1,16 +1,16 @@
-import { Router } from "express";
-import * as controller from "../controllers/auth";
-import auth from "../middlewares/auth";
-import { multerStorage } from "../middlewares/uploaderConfigs";
+// import { Router } from "express";
+// import * as controller from "../controllers/auth";
+// import auth from "../middlewares/auth";
+// import { multerStorage } from "../middlewares/uploaderConfigs";
 
-const router: Router = Router();
+// const router: Router = Router();
 
 
 
-router.route("/register").post(controller.register);
-router.route("/login").post(controller.login);
-router.route("/me").get(auth,controller.getMe);
-router.route("/refresh").post(controller.refresh);
-router.route("/logout").get(auth,controller.logOut);
+// router.route("/register").post(controller.register);
+// router.route("/login").post(controller.login);
+// router.route("/me").get(auth,controller.getMe);
+// router.route("/refresh").post(controller.refresh);
+// router.route("/logout").get(auth,controller.logOut);
 
-export default router;
+// export default router;
